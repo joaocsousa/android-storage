@@ -1,11 +1,17 @@
-package com.joaocsousa.library.androidstorage;
+package com.joaocsousa.library.androidstorage.implementations;
+
+import android.content.Context;
+
+import com.joaocsousa.library.androidstorage.DirectoryType;
+import com.joaocsousa.library.androidstorage.interfaces.Storage;
 
 import java.io.File;
 
 /**
- * Created by joaosousa on 19/08/14.
+ * Created by joaosousa on 18/08/14.
  */
-public class ExternalPublicStorage extends ExternalStorage {
+public class ExternalPrivateStorage extends ExternalStorage {
+
 	@Override
 	public File createFile(DirectoryType directoryType, String fileName) {
 		return null;
@@ -74,5 +80,10 @@ public class ExternalPublicStorage extends ExternalStorage {
 	@Override
 	public boolean move(File origin, File destination) {
 		return false;
+	}
+
+	@Override
+	public File getRootDirectory(DirectoryType type) {
+		return mContext.getExternalFilesDir(type.getType());
 	}
 }

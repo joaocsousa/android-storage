@@ -25,4 +25,8 @@ public enum DirectoryType {
 		mType = type;
 	}
 
+	public String getType() {
+		return mType;
+	}
+
 }

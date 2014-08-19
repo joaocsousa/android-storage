@@ -1,4 +1,6 @@
-package com.joaocsousa.library.androidstorage;
+package com.joaocsousa.library.androidstorage.interfaces;
+
+import com.joaocsousa.library.androidstorage.DirectoryType;
 
 import java.io.File;
 
@@ -30,4 +32,13 @@ public interface Storage {
 	boolean move(File origin, String destination);
 
 	boolean move(File origin, File destination);
+
+	File createFile(DirectoryType directoryType, String fileName);
+
+	File createDirectory(DirectoryType directoryType, String directoryName);
+
+	boolean fileExists(DirectoryType directoryType, String fileName);
+
+	boolean pathExists(DirectoryType directoryType, String path);
+
 }
