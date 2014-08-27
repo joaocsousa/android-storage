@@ -3,42 +3,44 @@ package com.joaocsousa.library.androidstorage.interfaces;
 import com.joaocsousa.library.androidstorage.DirectoryType;
 
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 
 /**
  * Created by joaosousa on 17/08/14.
  */
 public interface Storage {
 
-	boolean isWritable();
+	Boolean isWritable();
 
-	boolean isReadable();
+	Boolean isReadable();
 
-	File createFile(String fileName);
+	Boolean createFile(String fileName) throws IOException;
 
-	File createDirectory(String directoryName);
+	Boolean createDirectory(String directoryName);
 
-	boolean fileExists(String fileName);
+	Boolean fileExists(String fileName);
 
-	boolean pathExists(String path);
+	Boolean directoryExists(String path);
 
-	File getFile(String path, String fileName, boolean createIfNotFound);
+	File getFile(String path, String fileName, Boolean createIfNotFound);
 
-	File getDirectory(String path, boolean createIfNotFound);
+	File getDirectory(String path, Boolean createIfNotFound);
 
-	boolean copyFile(String origin, String destination);
+	Boolean copyFile(String origin, String destination);
 
-	boolean copyFile(String origin, File destination);
+	Boolean copyFile(String origin, File destination);
 
-	boolean move(File origin, String destination);
+	Boolean move(File origin, String destination);
 
-	boolean move(File origin, File destination);
+	Boolean move(File origin, File destination);
 
-	File createFile(DirectoryType directoryType, String fileName);
+	Boolean createFile(DirectoryType directoryType, String fileName);
 
-	File createDirectory(DirectoryType directoryType, String directoryName);
+	Boolean createDirectory(DirectoryType directoryType, String directoryName);
 
-	boolean fileExists(DirectoryType directoryType, String fileName);
+	Boolean fileExists(DirectoryType directoryType, String fileName);
 
-	boolean pathExists(DirectoryType directoryType, String path);
+	Boolean directoryExists(DirectoryType directoryType, String path);
 
 }

@@ -1,15 +1,9 @@
 package com.joaocsousa.library.androidstorage.implementations;
 
-import android.content.Context;
-import android.util.Log;
-
 import com.joaocsousa.library.androidstorage.DirectoryType;
-import com.joaocsousa.library.androidstorage.StorageManager;
-import com.joaocsousa.library.androidstorage.interfaces.Storage;
 
 import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
+import java.io.IOException;
 
 import static java.lang.String.valueOf;
 import static java.util.Calendar.getInstance;
@@ -19,101 +13,150 @@ import static java.util.Calendar.getInstance;
  */
 public class InternalStorage extends AndroidStorage {
 
+	/**
+	 * Same as {@link com.joaocsousa.library.androidstorage.implementations.InternalStorage#createFile(String)}
+	 * @param directoryType - ignored
+	 * @param fileName - the file name
+	 * @return
+	 */
 	@Override
-	public File createFile(DirectoryType directoryType, String fileName) {
-		throw new UnsupportedOperationException("Internal storage does not support directory types");
+	public Boolean createFile(DirectoryType directoryType, String fileName) {
+		return createFile(fileName);
 	}
 
 	/**
 	 * Same as {@link com.joaocsousa.library.androidstorage.implementations.InternalStorage#createDirectory(String)}
-	 * because directoryType is ignored
+	 * @param directoryType - ignored
+	 * @param directoryName - the directory name
 	 * @return
 	 */
 	@Override
-	public File createDirectory(DirectoryType directoryType, String directoryName) {
+	public Boolean createDirectory(DirectoryType directoryType, String directoryName) {
 		return createDirectory(directoryName);
 	}
 
 	/**
 	 * Same as {@link com.joaocsousa.library.androidstorage.implementations.InternalStorage#fileExists(String)}
-	 * because directoryType is ignored
+	 * @param directoryType - ignored
+	 * @param fileName - the file name
 	 * @return
 	 */
 	@Override
-	public boolean fileExists(DirectoryType directoryType, String fileName) {
+	public Boolean fileExists(DirectoryType directoryType, String fileName) {
 		return fileExists(fileName);
 	}
 
 	/**
-	 * Same as {@link com.joaocsousa.library.androidstorage.implementations.InternalStorage#pathExists(String)}
-	 * because directoryType is ignored
+	 * Same as {@link com.joaocsousa.library.androidstorage.implementations.InternalStorage#directoryExists(String)}
+	 * @param directoryType - ignored
+	 * @param path - the path name
 	 * @return
 	 */
 	@Override
-	public boolean pathExists(DirectoryType directoryType, String path) {
-		return pathExists(path);
+	public Boolean directoryExists(DirectoryType directoryType, String path) {
+		return directoryExists(path);
 	}
 
 	@Override
-	public boolean isWritable() {
+	public Boolean isWritable() {
 		return true;
 	}
 
 	@Override
-	public boolean isReadable() {
+	public Boolean isReadable() {
 		return true;
 	}
 
 	@Override
-	public File createFile(String fileName) {
-		return null;
+	public Boolean createFile(String fileName) {
+		return getDirectory(fileName, true) != null;
 	}
 
 	@Override
-	public File createDirectory(String directoryName) {
-		return null;
+	public Boolean createDirectory(String directoryName) {
+		return getDirectory(directoryName, true) != null;
 	}
 
 	@Override
-	public boolean fileExists(String fileName) {
-		return false;
+	public Boolean fileExists(String fileName) {
+		File file = new File(fileName);
+		return file.isFile() && file.exists();
 	}
 
 	@Override
-	public boolean pathExists(String path) {
-		return false;
+	public Boolean directoryExists(String path) {
+		File directory = new File(path);
+		return directory.isDirectory() && directory.exists();
 	}
 
 	@Override
-	public File getFile(String path, String fileName, boolean createIfNotFound) {
-		return null;
+	public File getFile(String path, String fileName, Boolean createIfNotFound) {
+		File file = new File(getRootDirectory(null), fileName);
+		if (createIfNotFound) {
+			try {
+				if (!file.createNewFile()) {
+					file = null;
+				}
+			} catch (IOException e) {
+				file = null;
+				e.printStackTrace();
+			}
+		}
+		return file;
 	}
 
 	@Override
-	public File getDirectory(String path, boolean createIfNotFound) {
-		return null;
+	public File getDirectory(String path, Boolean createIfNotFound) {
+		File file = new File(getRootDirectory(null), path);
+		if (createIfNotFound) {
+			if (!file.mkdirs()) {
+				file = null;
+			}
+		}
+		return file;
 	}
 
 	@Override
-	public boolean copyFile(String origin, String destination) {
-		return false;
+	public Boolean copyFile(String origin, String destination) {
+		Boolean result;
+		try {
+			copy(new File(getRootDirectory(null), origin), new File(getRootDirectory(null), destination));
+			result = false;
+		} catch (IOException e) {
+			e.printStackTrace();
+			result = false;
+		}
+		return result;
 	}
 
 	@Override
-	public boolean copyFile(String origin, File destination) {
-		return false;
+	public Boolean copyFile(String origin, File destination) {
+		Boolean result;
+		try {
+			copy(new File(getRootDirectory(null), origin), destination);
+			result = false;
+		} catch (IOException e) {
+			e.printStackTrace();
+			result = false;
+		}
+		return result;
 	}
 
 	@Override
-	public boolean move(File origin, String destination) {
-		return false;
+	public Boolean move(File origin, String destination) {
+		return origin.renameTo(new File(getRootDirectory(null), destination));
 	}
 
 	@Override
-	public boolean move(File origin, File destination) {
-		return false;
+	public Boolean move(File origin, File destination) {
+		return origin.renameTo(destination);
 	}
 
+	/**
+	 * Returns the root directory
+	 * @param type directory type is ignored
+	 * @return
+	 */
 	@Override
 	public File getRootDirectory(DirectoryType type) {
 		return mContext.getFilesDir();

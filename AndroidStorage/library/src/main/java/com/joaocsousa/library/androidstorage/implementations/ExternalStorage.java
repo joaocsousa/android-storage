@@ -17,7 +17,7 @@ import static android.os.Environment.getExternalStorageState;
 public abstract class ExternalStorage extends AndroidStorage {
 
 	@Override
-	public boolean isWritable() {
+	public Boolean isWritable() {
 		Boolean result = false;
 		String state = getExternalStorageState();
 		if (MEDIA_MOUNTED.equals(state)) {
@@ -27,7 +27,7 @@ public abstract class ExternalStorage extends AndroidStorage {
 	}
 
 	@Override
-	public boolean isReadable() {
+	public Boolean isReadable() {
 		Boolean result = false;
 		String state = getExternalStorageState();
 		if (MEDIA_MOUNTED.equals(state) ||
